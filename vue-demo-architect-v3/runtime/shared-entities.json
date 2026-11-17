@@ -1,0 +1,44 @@
+{
+  "projects": [
+    {
+      "projectId": "PRJ20260001",
+      "projectNo": "XM-2026-001",
+      "projectName": "华东智慧园区一期建设项目",
+      "customerName": "星辰智能科技有限公司",
+      "managerName": "张伟",
+      "department": "项目交付中心",
+      "budgetAmount": 1280000.0,
+      "status": "1"
+    },
+    {
+      "projectId": "PRJ20260002",
+      "projectNo": "XM-2026-002",
+      "projectName": "新一代云原生数据中心扩容工程",
+      "customerName": "华东云计算中心",
+      "managerName": "李娜",
+      "department": "研发一部",
+      "budgetAmount": 3560000.0,
+      "status": "1"
+    },
+    {
+      "projectId": "PRJ20260003",
+      "projectNo": "XM-2026-003",
+      "projectName": "综合能源物联网监测平台升级",
+      "customerName": "远航数字能源集团",
+      "managerName": "王强",
+      "department": "产品设计部",
+      "budgetAmount": 890000.0,
+      "status": "0"
+    },
+    {
+      "projectId": "PRJ20260004",
+      "projectNo": "XM-2026-004",
+      "projectName": "政务大数据协同治理平台二期",
+      "customerName": "中科智慧城市研究院",
+      "managerName": "陈静",
+      "department": "项目交付中心",
+      "budgetAmount": 2150000.0,
+      "status": "1"
+    }
+  ]
+}

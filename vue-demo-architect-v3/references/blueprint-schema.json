@@ -1,0 +1,210 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "VueDemoBlueprint",
+  "type": "object",
+  "required": [
+    "techStack",
+    "network",
+    "modules"
+  ],
+  "properties": {
+    "targetScope": {
+      "type": "object",
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": [
+            "full",
+            "menu",
+            "single-file"
+          ]
+        },
+        "targets": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "techStack": {
+      "type": "object",
+      "properties": {
+        "vueVersion": {
+          "type": "integer",
+          "enum": [
+            2,
+            3
+          ]
+        },
+        "bundler": {
+          "type": "string",
+          "enum": [
+            "vue-cli",
+            "vite",
+            "webpack"
+          ]
+        },
+        "envPrefix": {
+          "type": "string"
+        },
+        "uiLibrary": {
+          "type": "string"
+        },
+        "requestFile": {
+          "type": "string"
+        },
+        "routerFile": {
+          "type": "string"
+        },
+        "loginFile": {
+          "type": "string"
+        }
+      }
+    },
+    "network": {
+      "type": "object",
+      "properties": {
+        "baseURL": {
+          "type": "string"
+        },
+        "successCodeField": {
+          "type": "string"
+        },
+        "successCodeValue": {},
+        "messageField": {
+          "type": "string"
+        },
+        "listDataPath": {
+          "type": "string"
+        },
+        "totalPath": {
+          "type": "string"
+        },
+        "auth": {
+          "type": "object",
+          "properties": {
+            "loginUrl": {
+              "type": "string"
+            },
+            "captchaUrl": {
+              "type": "string"
+            },
+            "userInfoUrl": {
+              "type": "string"
+            },
+            "routersUrl": {
+              "type": "string"
+            },
+            "tokenKey": {
+              "type": "string"
+            }
+          }
+        }
+      }
+    },
+    "modules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "moduleName": {
+            "type": "string"
+          },
+          "routePath": {
+            "type": "string"
+          },
+          "entryFile": {
+            "type": "string"
+          },
+          "locked": {
+            "type": "boolean"
+          },
+          "dependencyTree": {
+            "type": "object",
+            "properties": {
+              "childComponents": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "mixinsAndHooks": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "apiFiles": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "apis": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "funcName": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                },
+                "method": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "list",
+                    "detail",
+                    "create",
+                    "update",
+                    "delete",
+                    "dict",
+                    "chart",
+                    "upload",
+                    "other"
+                  ]
+                },
+                "sourceFile": {
+                  "type": "string"
+                },
+                "fields": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "field": {
+                        "type": "string"
+                      },
+                      "label": {
+                        "type": "string"
+                      },
+                      "dataType": {
+                        "type": "string"
+                      },
+                      "enumValues": {
+                        "type": "array"
+                      },
+                      "sharedEntityRef": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                },
+                "chartConfig": {
+                  "type": "object"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
