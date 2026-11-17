@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "APIContractRegistry",
+  "type": "object",
+  "properties": {
+    "updatedAt": { "type": "string" },
+    "apis": {
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "required": ["method", "url", "responseType"],
+        "properties": {
+          "method": { "type": "string", "enum": ["GET", "POST", "PUT", "DELETE", "PATCH"] },
+          "url": { "type": "string" },
+          "summary": { "type": "string" },
+          "module": { "type": "string" },
+          "responseType": { "type": "string", "enum": ["list", "object", "chart", "upload", "action"] },
+          "sources": { "type": "array", "items": { "type": "string" } },
+          "requestFields": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "in": { "type": "string", "enum": ["query", "body", "path", "formData"] },
+                "type": { "type": "string" },
+                "label": { "type": "string" },
+                "required": { "type": "boolean" },
+                "isNew": { "type": "boolean" }
+              }
+            }
+          },
+          "responseFields": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": { "type": "string" },
+                "type": { "type": "string" },
+                "label": { "type": "string" },
+                "enumValues": { "type": "array", "items": { "type": "string" } },
+                "isNew": { "type": "boolean" }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
