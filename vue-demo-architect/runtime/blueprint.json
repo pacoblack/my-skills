@@ -1,0 +1,26 @@
+{
+  "updatedAt": "",
+  "techStack": {
+    "vueVersion": 2,
+    "bundler": "vue-cli",
+    "envPrefix": "VUE_APP_",
+    "uiLib": "element-ui",
+    "storeLib": "vuex"
+  },
+  "network": {
+    "requestFile": "src/utils/request.js",
+    "baseURL": "/dev-api",
+    "successCodeField": "code",
+    "successCodeValue": 200,
+    "msgField": "msg",
+    "listStructure": "code_rows_total",
+    "auth": {
+      "loginUrl": "/login",
+      "tokenField": "token",
+      "captchaUrl": "/captchaImage",
+      "userInfoUrl": "/getInfo",
+      "routersUrl": "/getRouters"
+    }
+  },
+  "modules": []
+}

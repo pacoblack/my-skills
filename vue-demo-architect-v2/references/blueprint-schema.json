@@ -1,0 +1,128 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "VueDemoBlueprintV2",
+  "type": "object",
+  "required": [
+    "techStack",
+    "network",
+    "sharedEntities",
+    "modules"
+  ],
+  "properties": {
+    "techStack": {
+      "type": "object",
+      "properties": {
+        "vueVersion": {
+          "type": "integer",
+          "enum": [
+            2,
+            3
+          ]
+        },
+        "bundler": {
+          "type": "string",
+          "enum": [
+            "vue-cli",
+            "vite"
+          ]
+        },
+        "envPrefix": {
+          "type": "string",
+          "enum": [
+            "VUE_APP_",
+            "VITE_"
+          ]
+        },
+        "uiLibrary": {
+          "type": "string"
+        }
+      }
+    },
+    "network": {
+      "type": "object",
+      "properties": {
+        "requestFile": {
+          "type": "string"
+        },
+        "successCode": {
+          "type": [
+            "integer",
+            "string",
+            "boolean"
+          ]
+        },
+        "codeField": {
+          "type": "string"
+        },
+        "msgField": {
+          "type": "string"
+        },
+        "loginApi": {
+          "type": "string"
+        },
+        "userInfoApi": {
+          "type": "string"
+        },
+        "routersApi": {
+          "type": "string"
+        }
+      }
+    },
+    "sharedEntities": {
+      "type": "object",
+      "description": "跨模块共享的核心业务实体池，确保不同菜单页面的数据一致",
+      "properties": {
+        "projects": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "customers": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        },
+        "departments": {
+          "type": "array",
+          "items": {
+            "type": "object"
+          }
+        }
+      }
+    },
+    "modules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "moduleName": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "routePath": {
+            "type": "string"
+          },
+          "viewFile": {
+            "type": "string"
+          },
+          "locked": {
+            "type": "boolean"
+          },
+          "apis": {
+            "type": "array"
+          },
+          "fields": {
+            "type": "array"
+          },
+          "charts": {
+            "type": "array"
+          }
+        }
+      }
+    }
+  }
+}

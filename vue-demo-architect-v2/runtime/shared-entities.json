@@ -1,0 +1,45 @@
+{
+  "projects": [
+    {
+      "id": "PRJ-2026-001",
+      "projectCode": "PRJ-001",
+      "projectName": "智慧园区综合管理平台（一期）",
+      "manager": "张伟",
+      "dept": "数字能源研究院",
+      "status": "1",
+      "budget": 480000
+    },
+    {
+      "id": "PRJ-2026-002",
+      "projectCode": "PRJ-002",
+      "projectName": "华东数据中心算力扩容项目",
+      "manager": "李娜",
+      "dept": "华东云计算中心",
+      "status": "1",
+      "budget": 920000
+    },
+    {
+      "id": "PRJ-2026-003",
+      "projectCode": "PRJ-003",
+      "projectName": "城市交通数字孪生底座建设",
+      "manager": "王强",
+      "dept": "智慧城市运营部",
+      "status": "2",
+      "budget": 650000
+    }
+  ],
+  "customers": [
+    {
+      "id": "CUS-001",
+      "customerName": "中科智联科技有限公司",
+      "contact": "陈敏",
+      "phone": "13800138001"
+    },
+    {
+      "id": "CUS-002",
+      "customerName": "海川能源集团股份公司",
+      "contact": "周洋",
+      "phone": "13900139002"
+    }
+  ]
+}

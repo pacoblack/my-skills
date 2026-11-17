@@ -1,0 +1,99 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "VueDemoBlueprint",
+  "type": "object",
+  "required": ["techStack", "network", "modules"],
+  "properties": {
+    "updatedAt": { "type": "string", "description": "最后更新ISO时间戳" },
+    "techStack": {
+      "type": "object",
+      "required": ["vueVersion", "bundler", "envPrefix", "uiLib"],
+      "properties": {
+        "vueVersion": { "type": "integer", "enum": [2, 3] },
+        "bundler": { "type": "string", "enum": ["vue-cli", "vite", "webpack"] },
+        "envPrefix": { "type": "string", "enum": ["VUE_APP_", "VITE_"] },
+        "uiLib": { "type": "string" },
+        "storeLib": { "type": "string" }
+      }
+    },
+    "network": {
+      "type": "object",
+      "required": ["requestFile", "successCodeField", "successCodeValue", "msgField"],
+      "properties": {
+        "requestFile": { "type": "string" },
+        "baseURL": { "type": "string" },
+        "successCodeField": { "type": "string", "default": "code" },
+        "successCodeValue": { "type": ["integer", "string", "boolean"], "default": 200 },
+        "msgField": { "type": "string", "default": "msg" },
+        "listStructure": {
+          "type": "string",
+          "description": "分页列表结构标识，如 code_rows_total 或 code_data_records_total"
+        },
+        "auth": {
+          "type": "object",
+          "properties": {
+            "loginUrl": { "type": "string" },
+            "tokenField": { "type": "string" },
+            "captchaUrl": { "type": "string" },
+            "userInfoUrl": { "type": "string" },
+            "routersUrl": { "type": "string" }
+          }
+        }
+      }
+    },
+    "modules": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["moduleName", "routePath", "viewFile", "apis"],
+        "properties": {
+          "moduleName": { "type": "string" },
+          "routePath": { "type": "string" },
+          "viewFile": { "type": "string" },
+          "locked": { "type": "boolean", "default": false },
+          "apis": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": ["url", "method", "apiType"],
+              "properties": {
+                "url": { "type": "string" },
+                "method": { "type": "string", "enum": ["GET", "POST", "PUT", "DELETE"] },
+                "apiType": { "type": "string", "enum": ["list", "detail", "create", "update", "delete", "chart", "upload", "other"] },
+                "fields": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "field": { "type": "string" },
+                      "label": { "type": "string" },
+                      "semantic": { "type": "string" },
+                      "enumValues": { "type": "array" }
+                    }
+                  }
+                },
+                "chartMeta": {
+                  "type": "object",
+                  "properties": {
+                    "chartType": { "type": "string", "enum": ["line", "bar", "pie", "radar", "gauge", "mixed"] },
+                    "xAxisField": { "type": "string" },
+                    "seriesFields": { "type": "array", "items": { "type": "string" } },
+                    "categories": { "type": "array", "items": { "type": "string" } }
+                  }
+                },
+                "uploadMeta": {
+                  "type": "object",
+                  "properties": {
+                    "urlField": { "type": "string", "default": "url" },
+                    "nameField": { "type": "string", "default": "fileName" },
+                    "sizeField": { "type": "string", "default": "size" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
