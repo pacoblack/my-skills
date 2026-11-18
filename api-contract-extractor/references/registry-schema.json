@@ -1,5 +1,5 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$schema": "http://json-schema.org",
   "title": "APIContractRegistry",
   "type": "object",
   "properties": {
@@ -14,7 +14,18 @@
           "url": { "type": "string" },
           "summary": { "type": "string" },
           "module": { "type": "string" },
+          "domain": { "type": "string", "description": "所属业务实体域，如 project、contract" },
+          "role": { "type": "string", "enum": ["list", "detail", "create", "update", "delete", "chart", "upload", "other"] },
           "responseType": { "type": "string", "enum": ["list", "object", "chart", "upload", "action"] },
+          "relation": {
+            "type": "object",
+            "description": "跨页面或主从接口唯一标识关联线索",
+            "properties": {
+              "sourceApi": { "type": "string" },
+              "sourceField": { "type": "string" },
+              "targetParam": { "type": "string" }
+            }
+          },
           "sources": { "type": "array", "items": { "type": "string" } },
           "requestFields": {
             "type": "array",
