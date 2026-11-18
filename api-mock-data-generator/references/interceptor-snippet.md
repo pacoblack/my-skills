@@ -1,26 +1,30 @@
-# 可选本地拦截器挂载参考（未 Mock 接口透明放行）
+# 离线演示版全环境拦截器挂载参考（兼容 Vue 2 & Vue 3）
 
-仅当用户明确要求在本地开发环境中拦截接口时，可参考以下方式在 Axios 请求拦截器中挂载 `all-apis-mock.js`：
+为了确保项目在打包（`build`）后依然能够脱离真实网络与后端服务独立运行，必须在 Axios 请求拦截器中挂载全环境生效的 Mock 拦截器（使用标准 ESM `import` 语法，同时兼容 Vite 与 Webpack）：
 
 ```javascript
-// 在 src/utils/request.js 的 interceptors.request.use 顶部添加：
-if (process.env.NODE_ENV === 'development' && process.env.VUE_APP_USE_MOCK === 'true') {
-  const { matchMockHandler } = require('@/mock/all-apis-mock')
-  const handler = matchMockHandler(config)
-  // 只有命中了已生成的 Mock 接口才拦截，未命中的接口直接透传给真实后端！
-  if (handler) {
-    config.adapter = () => new Promise(resolve => {
-      setTimeout(() => {
-        resolve({
-          data: handler(config),
-          status: 200,
-          statusText: 'OK',
-          headers: {},
-          config
-        })
-      }, 200)
-    })
-    return config
-  }
+// 1. 在 src/utils/request.js 文件顶部静态引入（兼容 Vite 与 Webpack）
+import { matchMockHandler } from '@/mock/all-apis-mock'
+
+// 2. 在 service.interceptors.request.use(config => { ... }) 的最顶部添加：
+const handler = matchMockHandler(config)
+if (handler) {
+  config.adapter = () => new Promise(resolve => {
+    setTimeout(() => {
+      resolve({
+        data: handler(config),
+        status: 200,
+        statusText: 'OK',
+        headers: {},
+        config
+      })
+    }, 150)
+  })
+  return config
 }
+// 注意：若未命中已生成的 Mock 接口，可根据离线模式决定是否直接返回空成功态，防止断网报错：
+// else {
+//   config.adapter = () => Promise.resolve({ data: { code: 200, data: null, msg: '离线兜底响应' }, status: 200, config })
+//   return config
+// }
 ```
