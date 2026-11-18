@@ -1,30 +1,41 @@
 ---
 name: api-contract-extractor
-description: 逆向提取 Vue 2 / Vue 3 页面及依赖组件调用的接口字段，执行字段级精准增量 Diff（无新增字段不覆盖），并同步生成标准化接口文档与包含所有接口的 Mock 契约文件。
+description: 针对大型前端项目，按路由分批逆向提取 Vue 2 / Vue 3 页面调用的接口字段，执行全局去重与字段级精准增量 Diff，并自动编译生成按路由拆分的接口文档与全局唯一的 Mock 契约文件。
 ---
 
-# API 接口字段逆向提取与增量文档生成器 (Skill 1)
+# API 接口字段逆向提取与分片增量生成器 (Skill 1 - 大型项目版)
 
-你是一个资深前端架构师。你的唯一职责是**只读静态分析前端源码**，反推出接口的请求参数与响应字段，执行字段级增量对比，并输出接口文档和全量接口 Mock 契约文件。
+你是一个资深前端架构师。面对 500+ 接口的大型项目，你的核心工作模式是**“按路由分批提取 + 全局池去重合并 + 脚本确定性编译”**，严禁单次全量输出大文件导致上下文溢出或卡顿。
 
 **核心铁律**：
 1. **零业务代码侵入**：严禁修改任何 `.vue`、`router` 或业务 JS 文件。
-2. **字段级精准增量**：已有接口若无新增字段，**绝对不更新**，防止覆盖人工补充的备注或 Mock 结构；若有新字段，仅追加合并并标注 `🆕`。
-3. **全量接口聚合**：输出的 `src/mock/all-apis-mock.js` 必须始终包含注册表中积累的**全部历史与新增接口**。
+2. **单路由微批执行**：每次扫描严格限定在 **1 个路由页面**（及其直接引用的弹窗、抽屉、子组件），提取完毕立即落盘为小体积 JSON 碎片并交由脚本处理。
+3. **全局去重与字段增量**：跨路由共用的接口在全局注册池中仅存一份，不同路由提取到的字段自动合并；已有字段**绝不覆盖**，仅追加新字段并标注 `🆕`。
+4. **脚本代劳渲染**：**严禁大模型手写长篇 Markdown 文档或全量 Mock 文件**，所有文档与 Mock 产物必须通过运行 `build-artifacts.js` 确定性生成。
+
+---
 
 ## 执行步骤
 
-### 第一步：确定扫描目标与递归追踪
-1. 接收用户指定的菜单名称或 `.vue` 文件路径（若未指定则扫描 `src/views/` 下的核心业务页面）。
-2. 阅读 `agents/extractor-agent.md`，以目标 `.vue` 为起点，执行广度优先（BFS）递归追踪其引用的弹窗（Dialog）、抽屉（Drawer）、子组件、`mixins`/`hooks` 及 `src/api/*.js` 接口定义。
-3. 提取每个接口的 `method`、`url`（动态路径统一标准化为 `:id` 格式）、请求参数（`query` / `body` / `path`）及响应字段（表格列、表单回显、状态枚举、ECharts 配置、上传回调字段）。
+### 第一步：初始化或读取路由任务清单
+1. 检查 `.trae/skills/api-contract-extractor/runtime/route-manifest.json` 是否存在且已填充路由列表。
+2. 若为空，先扫描项目路由配置（如 `src/router/index.js` 或动态路由菜单文件），将业务菜单路由写入 `route-manifest.json`（初始状态均为 `"pending"`），无需深入解析页面内容。
+3. 根据用户指定的菜单/路由（若未指定，则自动选取前 1~2 个 `"pending"` 状态的路由），确定本次扫描目标 `routeKey`（如 `system-user`）。
 
-### 第二步：确定性字段级增量 Diff
-1. 将本次扫描提取出的接口 JSON 写入临时文件 `temp-extracted.json`。
-2. 运行终端命令执行确定性 Diff 脚本：
-   `node .trae/skills/api-contract-extractor/scripts/diff-registry.js temp-extracted.json`
-3. 脚本会自动比对 `runtime/api-registry.json` 并输出每个接口的状态（`created` / `updated` / `unchanged`），随后删除 `temp-extracted.json`。
+### 第二步：单路由 BFS 递归源码分析
+1. 阅读 `agents/extractor-agent.md`，以目标路由的入口 `.vue` 为起点，执行广度优先（BFS）递归追踪：
+   - 追踪其 `import` 的局部子组件（Dialog、Drawer、TabPane、Chart 等）、`mixins`/`hooks` 及 `src/api/*.js`。
+   - 追踪列表页操作列跳转的详情/编辑页（记录跨页面跳转参数映射 `relation`）。
+2. 将当前路由提取结果写入临时碎片文件：
+   `.trae/skills/api-contract-extractor/runtime/chunks/temp-{routeKey}.json`
 
-### 第三步：增量更新接口文档与全量 Mock 契约文件
-1. **仅针对 `created` 和 `updated` 状态的接口**，阅读 `references/api-doc-template.md`，生成或增量更新 `docs/api-spec.md`（`unchanged` 接口段落保持原封不动）。
-2. 读取完整的 `runtime/api-registry.json`，生成或更新统一的全量接口 Mock 契约文件 `src/mock/all-apis-mock.js`（包含所有已注册接口的路由映射、字段骨架与类型标注，供 Skill 2 生成高仿真业务数据使用）。
+### 第三步：执行确定性 Diff 与自动化编译（零 Token 渲染）
+1. 运行合并与去重脚本（自动更新全局接口池、路由引用映射及 `route-manifest.json` 状态，并清理临时碎片）：
+   ```bash
+   node .trae/skills/api-contract-extractor/scripts/diff-registry.js .trae/skills/api-contract-extractor/runtime/chunks/temp-{routeKey}.json
+   ```
+2. 运行产物编译脚本（自动生成 `docs/api-spec/{routeKey}.md`、总索引 `docs/api-spec/README.md`、按业务域去重的 `src/mock/domains/*.mock.js` 以及总入口 `src/mock/all-apis-mock.js`）：
+   ```bash
+   node .trae/skills/api-contract-extractor/scripts/build-artifacts.js --route={routeKey}
+   ```
+3. 向用户简明汇报本次扫描的路由统计（新增接口数、复用合并接口数、总进度），并提示可继续扫描下一个 `pending` 路由。
